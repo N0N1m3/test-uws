@@ -91,17 +91,22 @@ struct HttpResponseWrapper {
             /* This thing perfectly fits in with unique_function, and will Reset on destructor */
             UniquePersistent<Function> p(isolate, Local<Function>::Cast(args[0]));
 
-            res->onData([p = std::move(p), isolate](std::string_view data, bool last) {
-                HandleScope hs(isolate);
+            std::string_view result {""}
 
-                Local<ArrayBuffer> dataArrayBuffer = ArrayBuffer_New(isolate, (void *) data.data(), data.length());
-
-                Local<Value> argv[] = {dataArrayBuffer, Boolean::New(isolate, last)};
-                CallJS(isolate, Local<Function>::New(isolate, p), 2, argv);
-
-                dataArrayBuffer->Detach();
-            });
-
+            while (1) {
+                res->onData([p = std::move(p), isolate](std::string_view data, bool last) {
+                    result = std::views::join(std::array{result, data};
+                    if (last) break;
+                });
+            }
+            HandleScope hs(isolate);
+    
+            Local<ArrayBuffer> dataArrayBuffer = ArrayBuffer_New(isolate, (void *) result.data(), result.length());
+    
+            Local<Value> argv[] = {dataArrayBuffer, Boolean::New(isolate, true)};
+            CallJS(isolate, Local<Function>::New(isolate, p), 2, argv);
+    
+            dataArrayBuffer->Detach();
             args.GetReturnValue().Set(args.Holder());
         }
     }
