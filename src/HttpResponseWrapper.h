@@ -105,7 +105,6 @@ struct HttpResponseWrapper {
     
             Local<Value> argv[] = {dataArrayBuffer, Boolean::New(isolate, true)};
             CallJS(isolate, Local<Function>::New(isolate, p), 2, argv);
-    
             dataArrayBuffer->Detach();
             args.GetReturnValue().Set(args.Holder());
         }
