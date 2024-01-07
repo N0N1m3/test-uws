@@ -94,8 +94,8 @@ struct HttpResponseWrapper {
             std::string_view result {""};
             bool finish = false;
 
-            res->onData([result, finish](std::string_view data, bool last) {
-                    result = {std::string(s1) + std::string(s2)};
+            res->onData([result, &finish](std::string_view data, bool last) {
+                    result = {std::string(result) + std::string(data)};
                     if (last) finish = last;
             });
 
