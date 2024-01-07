@@ -92,13 +92,16 @@ struct HttpResponseWrapper {
             UniquePersistent<Function> p(isolate, Local<Function>::Cast(args[0]));
 
             std::string_view result {""};
+            bool finish = false;
 
-            while (1) {
-                res->onData([p = std::move(p), isolate](std::string_view data, bool last) {
-                    result = std::views::join(std::array{result, data};
-                    if (last) break;
-                });
-            }
+            res->onData([result, finish](std::string_view data, bool last) {
+                    result = {std::string(s1) + std::string(s2)};
+                    if (last) finish = last;
+            });
+
+            do {
+                
+            } while (finish);
             HandleScope hs(isolate);
     
             Local<ArrayBuffer> dataArrayBuffer = ArrayBuffer_New(isolate, (void *) result.data(), result.length());
