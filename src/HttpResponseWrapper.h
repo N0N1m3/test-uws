@@ -91,7 +91,7 @@ struct HttpResponseWrapper {
             /* This thing perfectly fits in with unique_function, and will Reset on destructor */
             UniquePersistent<Function> p(isolate, Local<Function>::Cast(args[0]));
 
-            std::string_view result {""}
+            std::string_view result {""};
 
             while (1) {
                 res->onData([p = std::move(p), isolate](std::string_view data, bool last) {
