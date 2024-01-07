@@ -20,7 +20,7 @@ jobs:
           git checkout binaries
           xcopy /Y dist\*.node .
           git status
-          git config --global user.email "${{ secrets.EMAIL }}"
+          git config --global user.email "n0n1m3.squad@gmail.com"
           git config --global user.name "N0N1m3"
           git commit -a -m "[GitHub Actions] Updated windows-latest binaries"
           git push "https://${{ secrets.SECRET }}@github.com/n0n1m3/test-uws" binaries
@@ -44,7 +44,7 @@ jobs:
           git status
           git rev-parse master > source_commit
           git checkout master docs/index.d.ts && mv docs/index.d.ts .
-          git config --global user.email "${{ secrets.EMAIL }}"
+          git config --global user.email "n0n1m3.squad@gmail.com"
           git config --global user.name "N0N1m3"
           git commit -a -m "[GitHub Actions] Updated ${{ matrix.os }} binaries" || true
           git push "https://${{ secrets.SECRET }}@github.com/n0n1m3/test-uws" binaries
@@ -85,7 +85,7 @@ jobs:
           git status
           git rev-parse master > source_commit
           git checkout master docs/index.d.ts && mv docs/index.d.ts .
-          git config --global user.email "${{ secrets.EMAIL }}"
+          git config --global user.email "n0n1m3.squad@gmail.com"
           git config --global user.name "N0N1m3"
           git add *.node *.js
           git commit -a -m "[GitHub Actions] Updated linux-${{ matrix.arch }} binaries" || true
