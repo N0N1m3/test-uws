@@ -18,6 +18,10 @@
 #include "App.h"
 #include "Utilities.h"
 
+#include <vector>
+#include <iterator>
+#include <sstream>
+
 #include <v8.h>
 using namespace v8;
 
@@ -91,20 +95,26 @@ struct HttpResponseWrapper {
             /* This thing perfectly fits in with unique_function, and will Reset on destructor */
             UniquePersistent<Function> p(isolate, Local<Function>::Cast(args[0]));
 
-            std::string_view result {""};
+            std::vector <std::string> buffers;
             bool finish = false;
 
-            res->onData([result=result, finish=finish](std::string_view data, bool last) {
-                    result = {std::string(result) + std::string(data)};
+            res->onData([&buffers, &finish](std::string_view data, bool last) {
+                    buffers.push_back(std::string(data));
                     if (last) finish = last;
             });
 
             do {
                 
             } while (finish);
+            
+            const char* const delim = "";
+            std::ostringstream joined_stream;
+            std::copy(buffers.begin(), buffers.end(), std::ostream_iterator<std::string>(joined_stream, delim));
+            std::string_view joined {joined_stream.str()};
+            
             HandleScope hs(isolate);
     
-            Local<ArrayBuffer> dataArrayBuffer = ArrayBuffer_New(isolate, (void *) result.data(), result.length());
+            Local<ArrayBuffer> dataArrayBuffer = ArrayBuffer_New(isolate, (void *) joined.data(), joined.length());
     
             Local<Value> argv[] = {dataArrayBuffer, Boolean::New(isolate, true)};
             CallJS(isolate, Local<Function>::New(isolate, p), 2, argv);
